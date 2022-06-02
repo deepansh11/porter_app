@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:porter_app/src/repo/providers.dart';
 import 'package:pushy_flutter/pushy_flutter.dart';
 
 import 'src/utils/routes.dart';
@@ -32,11 +33,26 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() async {
+      final pushy = await ref.watch(pushyRef.future);
+      pushy.pushyRegister();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final routes = ref.read(routesRepo);
 
     return MaterialApp(

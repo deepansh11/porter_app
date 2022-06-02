@@ -17,6 +17,36 @@ class TaskResponse {
 }
 
 @JsonSerializable()
+class TaskDataForNotif {
+  @JsonKey(name: '_id')
+  final int? taskId;
+  final String? taskName;
+  final String? startLocation;
+  final String? destination;
+  final bool? wheelChair;
+  final String? scheduleDate;
+  final String? priority;
+  final String? wheelChairType;
+  final String? taskStatus;
+
+  TaskDataForNotif(
+    this.taskName,
+    this.startLocation,
+    this.destination,
+    this.wheelChair,
+    this.scheduleDate,
+    this.taskId,
+    this.taskStatus,
+    this.priority,
+    this.wheelChairType,
+  );
+
+  factory TaskDataForNotif.fromJson(Map<String, dynamic> json) =>
+      _$TaskDataForNotifFromJson(json);
+  Map<String, dynamic> toJson() => _$TaskDataForNotifToJson(this);
+}
+
+@JsonSerializable()
 class TaskData {
   @JsonKey(name: '_id')
   final int? taskId;
@@ -25,6 +55,8 @@ class TaskData {
   final String? destination;
   final bool? wheelChair;
   final String? scheduleDate;
+  final String? priority;
+  final String? wheelChairType;
   final TaskStatus? taskStatus;
 
   TaskData(
@@ -35,6 +67,8 @@ class TaskData {
     this.scheduleDate,
     this.taskId,
     this.taskStatus,
+    this.priority,
+    this.wheelChairType,
   );
 
   factory TaskData.fromJson(Map<String, dynamic> json) =>

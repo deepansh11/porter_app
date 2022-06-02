@@ -33,6 +33,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         child: CircularProgressIndicator(),
       );
     });
+    Navigator.of(context).pop();
   }
 
   @override

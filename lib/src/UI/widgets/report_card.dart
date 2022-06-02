@@ -27,39 +27,68 @@ class ReportsCard extends StatelessWidget {
   final bool wheelChair;
   final VoidCallback accepted;
   final VoidCallback rejected;
+  // final VoidCallback backToTaskPage;
 
   @override
   Widget build(BuildContext context) {
+// Device height: 837.3333333333334
+// Device width: 384.0
+// Container width: 368.0, height: 261.0
+
     final String yesNo = wheelChair ? 'Yes' : 'No';
 
-    Color? color;
+    final size = MediaQuery.of(context).size;
+
+    final Color? color;
 
     if (status?.taskId == 0) {
       color = Colors.yellow.shade600;
     } else if (status?.taskId == 1) {
       color = Colors.green;
+    } else if (status?.taskId == 4) {
+      color = Colors.blue;
     } else {
       color = Colors.red;
     }
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(
+      child: Container(
+        width: size.width - 50,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(
+              10,
+            ),
+            border: Border.all(
               color: Colors.blue,
             )),
         child: ExpandablePanel(
           header: Padding(
             padding: const EdgeInsets.all(8),
-            child: Text(
-              'Task Name: $title',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Task Name: $title',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.all(4),
+                  child: Text(
+                    status?.taskStatus.toString() ?? '',
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           collapsed: const SizedBox(),
@@ -74,12 +103,15 @@ class ReportsCard extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Start Location: $startLocation'),
-                    Text('Destination: $endLocation'),
-                  ],
+                Text(
+                  'Start Location: $startLocation',
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  'Destination: $endLocation',
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(
                   height: 10,
@@ -88,38 +120,7 @@ class ReportsCard extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          WidgetSpan(
-                              child: Container(
-                            padding: const EdgeInsets.all(4),
-                            child: const Text('Task Status: '),
-                          )),
-                          WidgetSpan(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: color,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding: const EdgeInsets.all(4),
-                              child: Text(
-                                status?.taskStatus.toString() ?? '',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text('Is Wheel Chair Needed? : $yesNo'),
-                  ],
-                ),
+                Text('Is Wheel Chair Needed? : $yesNo'),
                 const SizedBox(
                   height: 10,
                 ),
@@ -146,6 +147,13 @@ class ReportsCard extends StatelessWidget {
                         ),
                       )
                     : const SizedBox(),
+                // status?.taskId == 4
+                //     ?  Padding(
+                //         padding:
+                //            const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                //         child: AppButton(onPressed:backToTaskPage , label: 'Task Details',icon: Icons.,),
+                //       )
+                //     : const SizedBox()
               ],
             ),
           ),

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:porter_app/main.dart';
+import 'package:porter_app/src/repo/providers.dart';
 import 'package:pushy_flutter/pushy_flutter.dart';
 
 import 'login.dart';
 import 'register.dart';
 
-class WelcomePage extends StatefulWidget {
+class WelcomePage extends ConsumerStatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
 
   static const routeName = '/';
@@ -14,16 +17,11 @@ class WelcomePage extends StatefulWidget {
   _WelcomePageState createState() => _WelcomePageState();
 }
 
-class _WelcomePageState extends State<WelcomePage> {
+class _WelcomePageState extends ConsumerState<WelcomePage> {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    Future.microtask(() {
-      Pushy.listen();
-      Pushy.setNotificationListener(backgroundNotificationListener);
-    });
   }
 
   @override

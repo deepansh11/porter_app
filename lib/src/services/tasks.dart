@@ -35,11 +35,11 @@ class TasksRepository {
 
   Future<bool?> updateTask(int taskId, TaskData data) async {
     try {
-      Response task = await dio.put('/task' + '/$taskId', data: data.toJson());
+      Response task = await dio.put('/task/$taskId', data: data.toJson());
 
-      if (task.statusCode == 200) {
+      if (task.data == 'Task updated successfully') {
         if (task.toString() == 'Task updated successfully') {
-          await EasyLoading.showSuccess('You have accepted the task');
+          print('Data updated successfully');
         } else {
           await EasyLoading.showError('Error occurred please try again later');
         }
