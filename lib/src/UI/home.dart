@@ -39,7 +39,6 @@ class _TaskDataScreenState extends ConsumerState<TaskDataScreen> {
 
   void _accepcted(int id, TaskData? data, Porter porter) async {
     if (data != null) {
-      final date = DateFormat.yMd().add_Hms().format(DateTime.now());
       final payload = TaskPayload(
         id,
         data,
@@ -94,6 +93,10 @@ class _TaskDataScreenState extends ConsumerState<TaskDataScreen> {
                     final taskStatus = tasks?.taskStatus;
                     final priority = tasks?.priority;
                     final wheelChairType = tasks?.wheelChairType;
+                    final completeTime = tasks?.completeTime;
+                    final arriveTime = tasks?.arriveTime;
+                    final endTime = tasks?.declineTime;
+                    final createdAt = tasks?.createdAt;
 
                     final newTask = TaskData(
                       title,
@@ -105,6 +108,11 @@ class _TaskDataScreenState extends ConsumerState<TaskDataScreen> {
                       TaskStatus(1, 'Accepted', widget.porter.userName),
                       priority,
                       wheelChairType,
+                      arriveTime,
+                      DateFormat.yMd().add_Hms().format(DateTime.now()),
+                      endTime,
+                      completeTime,
+                      createdAt,
                     );
 
                     return ReportsCard(

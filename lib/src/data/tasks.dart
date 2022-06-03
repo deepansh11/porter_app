@@ -28,6 +28,11 @@ class TaskDataForNotif {
   final String? priority;
   final String? wheelChairType;
   final String? taskStatus;
+  final String? arriveTime;
+  final String? acceptTime;
+  final String? declineTime;
+  final String? completeTime;
+  final String? createdAt;
 
   TaskDataForNotif(
     this.taskName,
@@ -39,6 +44,11 @@ class TaskDataForNotif {
     this.taskStatus,
     this.priority,
     this.wheelChairType,
+    this.arriveTime,
+    this.acceptTime,
+    this.declineTime,
+    this.completeTime,
+    this.createdAt,
   );
 
   factory TaskDataForNotif.fromJson(Map<String, dynamic> json) =>
@@ -56,8 +66,13 @@ class TaskData {
   final bool? wheelChair;
   final String? scheduleDate;
   final String? priority;
+  final String? createdAt;
   final String? wheelChairType;
   final TaskStatus? taskStatus;
+  final String? arriveTime;
+  final String? acceptTime;
+  final String? declineTime;
+  final String? completeTime;
 
   TaskData(
     this.taskName,
@@ -69,6 +84,11 @@ class TaskData {
     this.taskStatus,
     this.priority,
     this.wheelChairType,
+    this.arriveTime,
+    this.acceptTime,
+    this.declineTime,
+    this.completeTime,
+    this.createdAt,
   );
 
   factory TaskData.fromJson(Map<String, dynamic> json) =>

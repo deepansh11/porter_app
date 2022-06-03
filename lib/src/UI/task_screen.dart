@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:porter_app/src/UI/home_screen.dart';
 import 'package:porter_app/src/UI/widgets/app_button.dart';
 import 'package:porter_app/src/UI/widgets/wheel_chair_location.dart';
@@ -38,28 +39,62 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
     mqtt = ref.watch(mqttMessage.notifier);
   }
 
-  _showDelayAndChangeButtonText(TaskPayload payload) {
-    setState(() {
-      didButtonPress = !didButtonPress;
-    });
+  ValueNotifier<String> arriveTime = ValueNotifier<String>('');
 
-    Future.delayed(
-      const Duration(milliseconds: 20),
-      () async {
-        await ref.watch(taskUpdateProvider(payload).future);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Sending arrive time to server',
-            ),
-          ),
-        );
-      },
+  void _showDelayAndChangeButtonText(TaskData taskData, Porter porter) async {
+    arriveTime.value = DateFormat.yMd().add_Hms().format(DateTime.now());
+    final newTaskData = TaskData(
+      taskData.taskName,
+      taskData.startLocation,
+      taskData.destination,
+      taskData.wheelChair,
+      taskData.scheduleDate,
+      taskData.taskId,
+      TaskStatus(4, 'Arrived', porter.userName),
+      taskData.priority,
+      taskData.wheelChairType,
+      arriveTime.value,
+      taskData.acceptTime,
+      taskData.declineTime,
+      taskData.completeTime,
+      taskData.createdAt,
     );
+
+    final payload = TaskPayload(taskData.taskId ?? 0, newTaskData);
+
+    final data = await ref.watch(taskUpdateProvider(payload).future);
+
+    if (data != didButtonPress) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Sending arrive time to server',
+          ),
+        ),
+      );
+      setState(() {
+        didButtonPress = !didButtonPress;
+      });
+    }
   }
 
-  void _endTask(Porter porter, TaskPayload payload) async {
+  void _endTask(TaskData taskData, Porter porter) async {
+    final newTaskEndData = TaskData(
+        taskData.taskName,
+        taskData.startLocation,
+        taskData.destination,
+        taskData.wheelChair,
+        taskData.scheduleDate,
+        taskData.taskId,
+        TaskStatus(5, 'Task Ended', porter.userName),
+        taskData.priority,
+        taskData.wheelChairType,
+        arriveTime.value,
+        taskData.acceptTime,
+        taskData.declineTime,
+        DateFormat.yMd().add_Hms().format(DateTime.now()),
+        taskData.createdAt);
+    final payload = TaskPayload(taskData.taskId ?? 0, newTaskEndData);
     await ref.watch(taskUpdateProvider(payload).future);
 
     showDialog(
@@ -95,30 +130,6 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
         zoneData = ZoneData.fromJson(showZones);
       }
     }
-
-    final newTaskData = TaskData(
-      taskData.taskName,
-      taskData.startLocation,
-      taskData.destination,
-      taskData.wheelChair,
-      taskData.scheduleDate,
-      taskData.taskId,
-      TaskStatus(4, 'Arrived', arguments.porter.userName),
-      taskData.priority,
-      taskData.wheelChairType,
-    );
-
-    final newTaskEndData = TaskData(
-      taskData.taskName,
-      taskData.startLocation,
-      taskData.destination,
-      taskData.wheelChair,
-      taskData.scheduleDate,
-      taskData.taskId,
-      TaskStatus(5, 'Task Ended', arguments.porter.userName),
-      taskData.priority,
-      taskData.wheelChairType,
-    );
 
     final wallDeviceMac = zoneData?.wallDevice?.keys.first ?? '';
     // print('Values: ${zoneData?.wallDevice?.entries}');
@@ -186,8 +197,9 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                           child: Text(
                             wallDeviceMac,
                             style: const TextStyle(
-                                color: Colors.blue,
-                                decoration: TextDecoration.underline),
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            ),
                           )))
                 ],
               ),
@@ -198,10 +210,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
             !didButtonPress
                 ? AppButton(
                     onPressed: () {
-                      _showDelayAndChangeButtonText(TaskPayload(
-                        taskData.taskId ?? 0,
-                        newTaskData,
-                      ));
+                      _showDelayAndChangeButtonText(taskData, arguments.porter);
                     },
                     label: 'Arrived',
                     icon: Icons.access_time,
@@ -209,12 +218,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
                 : const SizedBox(),
             didButtonPress
                 ? AppButton(
-                    onPressed: () => _endTask(
-                        arguments.porter,
-                        TaskPayload(
-                          taskData.taskId ?? 0,
-                          newTaskEndData,
-                        )),
+                    onPressed: () => _endTask(taskData, arguments.porter),
                     label: 'End Task',
                     icon: Icons.done,
                   )

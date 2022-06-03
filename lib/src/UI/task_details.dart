@@ -24,7 +24,6 @@ class TaskDetails extends ConsumerWidget {
 
     void _accepcted(int id, TaskData? data) async {
       if (data != null) {
-        final date = DateFormat.yMd().add_Hms().format(DateTime.now());
         final payload = TaskPayload(
           id,
           data,
@@ -103,11 +102,16 @@ class TaskDetails extends ConsumerWidget {
                         tasks.taskId,
                         TaskStatus(
                           1,
-                          'accepted',
+                          'Accepted',
                           porter.userName,
                         ),
                         tasks.priority,
                         tasks.wheelChairType,
+                        tasks.arriveTime,
+                        DateFormat.yMd().add_Hms().format(DateTime.now()),
+                        tasks.declineTime,
+                        tasks.completeTime,
+                        tasks.createdAt,
                       ),
                     );
                   },
